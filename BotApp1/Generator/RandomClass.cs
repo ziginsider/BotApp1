@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace BotApp1.Generator
@@ -162,51 +163,51 @@ namespace BotApp1.Generator
             return r.Next(0, max);
         }
 
-        private string GetRandomElement(List<string> list)
+        private async Task<string> GetRandomElement(List<string> list)
         {
             Random r = new Random();
             return list[r.Next(0, list.Count())];
         }
         #endregion
         #region Func of 1 -> imenitelnyi
-        public string GetOlyaGabe_1()
+        public async Task<string> GetOlyaGabe_1()
         {
-            return GetRandomElement(listOlyaGabe_1);
+            return await GetRandomElement(listOlyaGabe_1);
         }
 
-        public string GetPredicateGabe_1()
+        public async Task<string> GetPredicateGabe_1()
         {
-            var result1 = GetRandomElement(listGabePredicatPredicat_1);
-            var result2 = GetRandomElement(listGabePredicat_1);
+            var result1 = await GetRandomElement(listGabePredicatPredicat_1);
+            var result2 = await GetRandomElement(listGabePredicat_1);
             return (result1 + result2);
         }
 
-        public string GetPostdicatGabe_1()
+        public async Task<string> GetPostdicatGabe_1()
         {
-            return GetRandomElement(listGabePostdicat_1);
+            return await GetRandomElement(listGabePostdicat_1);
         }
 
-        public string GetResultOlyaGabe_1()
+        public async Task<string> GetResultOlyaGabe_1()
         {
-            var result = GetPredicateGabe_1() + GetOlyaGabe_1() + ". " + GetPostdicatGabe_1();
+            var result = await GetPredicateGabe_1() + await GetOlyaGabe_1() + ". " + await GetPostdicatGabe_1();
             return result;
         }
         #endregion
         #region Func of 2 -> Vinitelnyi
-        public string GetOlyaGabe_2()
+        public async Task<string> GetOlyaGabe_2()
         {
-            return GetRandomElement(listOlyaGabe_2);
+            return await GetRandomElement(listOlyaGabe_2);
         }
 
-        public string GetPredicateGabe_2()
+        public async Task<string> GetPredicateGabe_2()
         {
-            var result1 = GetRandomElement(listGabePredicatPredicat_1);
-            var result2 = GetRandomElement(listGabePredicat_2);
+            var result1 = await GetRandomElement(listGabePredicatPredicat_1);
+            var result2 = await GetRandomElement(listGabePredicat_2);
             return (result1 + result2);
         }
-        public string GetResultOlyaGabe_2()
+        public async Task<string> GetResultOlyaGabe_2()
         {
-            var result = GetPredicateGabe_2() + GetOlyaGabe_2() + ". " + GetPostdicatGabe_1();
+            var result = await GetPredicateGabe_2() + await GetOlyaGabe_2() + ". " + await GetPostdicatGabe_1();
             return result;
         }
         #endregion
