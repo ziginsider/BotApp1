@@ -31,8 +31,11 @@ namespace BotApp1
                 var replyText = await Reply(activity.Text);
 
                 // return our reply to the user
-                Activity reply = activity.CreateReply(replyText);
-                await connector.Conversations.ReplyToActivityAsync(reply);
+                if (replyText != "131313")
+                {
+                    Activity reply = activity.CreateReply(replyText);
+                    await connector.Conversations.ReplyToActivityAsync(reply);
+                }
             }
             else
             {
@@ -70,72 +73,108 @@ namespace BotApp1
             int when = 0;
             string whens = "today";
             string layl = ""; //фраза на подарки
+            int choise = 0; //ветка выбора для подарков
             Measurement mes = Measurement.None;
             RandomClass rand = new RandomClass();
             var a = msg.ToLower().Split(' ');
-            if (IsPresent(a, "help"))
+            if (IsPresent(a, "bro") || IsPresent(a, "bro,") || IsPresent(a, ",bro,") || IsPresent(a, "bro!") ||
+                IsPresent(a, "бро") || IsPresent(a, "бро,") || IsPresent(a, ",бро,") || IsPresent(a, "бро!"))
             {
-                return @"This is a simple weather bot.
+                if (IsPresent(a, "help"))
+                {
+                    return @"This is a simple weather bot.
                         Example of commands include:
                           temperature today
                           temperature in Moscow
                           humidity tomorrow";
-            }
-            if (IsPresent(a, "temperature")) mes |= Measurement.Temp;
-            if (IsPresent(a, "humidity")) mes |= Measurement.Humidity;
-            if (IsPresent(a, "pressure")) mes |= Measurement.Pressure;
-            if (IsPresent(a, "today")) { when = 0; whens = "today"; }
-            if (IsPresent(a, "tomorrow")) { when = 1; whens = "tomorrow"; }
-            if (NextTo(a, "in") != "") city = NextTo(a, "in");
-            var res = await OWM.Forecast(city);
-            var r = res[when];
-
-            if (IsPresent(a, "микола") || IsPresent(a, "миколу") || IsPresent(a, "миколу?") || IsPresent(a, "микола?"))
-            {
-                layl += "Так, я ведаю Мiколу. Але, пачакайце... ёсць яшчэ Ыкола. Гэта не адзiн и той жа чалавек?";
-            }
-           
-
-
-
-            #region Gabe
-            int choise = rand.GetIntNumber(100);
-
-            
-            if (NextTo(a, "падарыць") == "оле" || NextTo(a, "падарыць") == "оле?")
-            {
-                if (choise < 50) //именительный падеж
-                {
-                    layl += rand.GetResultOlyaGabe_1();
                 }
-                if (choise >= 50) //винительный падеж
+                if (IsPresent(a, "temperature")) mes |= Measurement.Temp;
+                if (IsPresent(a, "humidity")) mes |= Measurement.Humidity;
+                if (IsPresent(a, "pressure")) mes |= Measurement.Pressure;
+                if (IsPresent(a, "today")) { when = 0; whens = "today"; }
+                if (IsPresent(a, "tomorrow")) { when = 1; whens = "tomorrow"; }
+                if (NextTo(a, "in") != "") city = NextTo(a, "in");
+                var res = await OWM.Forecast(city);
+                var r = res[when];
+
+                if (IsPresent(a, "микола") || IsPresent(a, "миколу") || IsPresent(a, "миколу?") || IsPresent(a, "микола?"))
                 {
-                    layl += rand.GetResultOlyaGabe_2();
+                    layl += "Так, я ведаю Мiколу. Але, пачакайце... ёсць яшчэ Ыкола. Гэта не адзiн и той жа чалавек?";
                 }
-            }
-            #endregion
 
-            StringBuilder sb = new StringBuilder();
-            if ((mes & Measurement.Temp) > 0)
-            {
-                sb.Append($"The temperature on {r.Date} in {city} is {r.Temp}\r\n");
-            }
-            if ((mes & Measurement.Pressure) > 0)
-            {
-                sb.Append($"The pressure on {r.Date} in {city} is {r.Pressure}\r\n");
-            }
-            if ((mes & Measurement.Humidity) > 0)
-            {
-                sb.Append($"Humidity on {r.Date} in {city} is {r.Humidity}\r\n");
-            }
 
-            if (!String.IsNullOrEmpty(layl))
-            {
-                sb.Append("\r\n" + layl + "\r\n");
-            }
+                if (IsPresent(a, "вітаю") || IsPresent(a, "вітаю!") || IsPresent(a, "вітаю.") || IsPresent(a, "прывітанне") ||
+                    IsPresent(a, "прывітанне!") || IsPresent(a, "прывітанне.") || IsPresent(a, "прывітанне,") || IsPresent(a, "привет") ||
+                    IsPresent(a, "привет!") || IsPresent(a, "привет,") || IsPresent(a, "привет.") || IsPresent(a, "прив"))
+                {
+                    layl += "Прывітанне!";
+                }
 
-            if (sb.Length == 0) return "I do not understand";
-            else return sb.ToString();
+                #region Gabe
+
+
+
+                if (NextTo(a, "падарыць") == "оле" || NextTo(a, "падарыць") == "оле?" || NextTo(a, "оле") == "падорым" || NextTo(a, "оле") == "падорым?" ||
+                    NextTo(a, "падаруем") == "оле" || NextTo(a, "падаруем") == "оле?" || NextTo(a, "падараваць") == "оле" || NextTo(a, "падараваць") == "оле?")
+                {
+                    choise = rand.GetIntNumber(120);
+                    if (choise < 50) //именительный падеж
+                    {
+                        layl += rand.GetResultOlyaGabe_1();
+                    }
+                    if (choise >= 50 && choise <= 100) //винительный падеж
+                    {
+                        layl += rand.GetResultOlyaGabe_2();
+                    }
+                    if (choise > 100)
+                    {
+                        layl += rand.GetResultAllPhrasesGabe();
+                    }
+                }
+
+                if (NextTo(a, "падарыць") == "пеце" || NextTo(a, "падарыць") == "пеце?" || NextTo(a, "пеце") == "падорым" || NextTo(a, "пеце") == "падорым?"
+                        || NextTo(a, "падарыць") == "пецю" || NextTo(a, "падарыць") == "пецю?" || NextTo(a, "падарыць") == "пятру" || NextTo(a, "падарыць") == "пятру?"
+                       || NextTo(a, "падаруем") == "пеце" || NextTo(a, "падаруем") == "пеце?")
+                {
+                    choise = rand.GetIntNumber(120);
+                    if (choise < 50) //именительный падеж
+                    {
+                        layl += rand.GetResultPetroGabe_1();
+                    }
+                    if (choise >= 50 && choise <= 100) //винительный падеж
+                    {
+                        layl += rand.GetResultPetroGabe_2();
+                    }
+                    if (choise > 100)
+                    {
+                        layl += rand.GetResultAllPhrasesGabe();
+                    }
+                }
+                #endregion
+
+                StringBuilder sb = new StringBuilder();
+                if ((mes & Measurement.Temp) > 0)
+                {
+                    sb.Append($"The temperature on {r.Date} in {city} is {r.Temp}\r\n");
+                }
+                if ((mes & Measurement.Pressure) > 0)
+                {
+                    sb.Append($"The pressure on {r.Date} in {city} is {r.Pressure}\r\n");
+                }
+                if ((mes & Measurement.Humidity) > 0)
+                {
+                    sb.Append($"Humidity on {r.Date} in {city} is {r.Humidity}\r\n");
+                }
+
+                if (!String.IsNullOrEmpty(layl))
+                {
+                    sb.Append("\r\n" + layl + "\r\n");
+                }
+
+                if (sb.Length == 0) return "Я не разумею";
+                else return sb.ToString();
+            }
+            return "131313";
         }
 
         private Activity HandleSystemMessage(Activity message)
